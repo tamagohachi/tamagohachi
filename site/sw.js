@@ -1,6 +1,6 @@
 // 一度開いた端末ではオフラインでも起動・画像生成できるようにする（設計書 7.9）
-const CACHE = "app-v1";
-const ASSETS = ["./", "index.html", "privacy.html", "css/app.css", "js/app.js", "js/render.js", "js/data.js", "fonts/inter.woff2", "fonts/inter-tight.woff2"];
+const CACHE = "app-v2";
+const ASSETS = ["./", "index.html", "privacy.html", "css/app.css", "js/app.js", "js/render.js", "js/data.js", "fonts/inter-tight.woff2"];
 
 self.addEventListener("install", (e) => e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting())));
 self.addEventListener("activate", (e) => e.waitUntil(

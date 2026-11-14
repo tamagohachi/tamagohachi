@@ -3,7 +3,7 @@ import { PROC, WORDMARK } from "./data.js";
 
 const INK = "#0E0E0E", PAPER = "#F5F4F0";
 const JP = '"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans CJK JP","Noto Sans JP","Yu Gothic",sans-serif';
-const F_HERO = `"Inter Tight",${JP}`, F_TXT = `"Inter",${JP}`;
+const F_HERO = `"Inter Tight",${JP}`, F_TXT = F_HERO;
 const W = 1080, MX = 72, CW = W - MX * 2, CAP = 0.727;
 
 export const sizeOf = (s) => ({ w: W, h: s.ratio === "4:5" ? 1350 : 1920 });

@@ -256,6 +256,6 @@ if (/Instagram|FBAN|FBAV|Line\//i.test(navigator.userAgent)) $("#iab").hidden = 
 
 drawSample();
 // 欧文フォントの読み込み後に描き直す。失敗しても端末の標準フォントで描ける
-Promise.all([document.fonts.load('800 132px "Inter Tight"'), document.fonts.load('600 44px "Inter"')])
+Promise.all([document.fonts.load('800 132px "Inter Tight"'), document.fonts.load('600 44px "Inter Tight"')])
   .catch(() => {}).then(() => { drawSample(); if (step >= 1 && step <= 5) draw(); });
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
