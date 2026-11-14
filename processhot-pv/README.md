@@ -3,6 +3,7 @@
 - `out/processhot_reel_32s.mp4` … リール用（9:16・1080×1920・30fps・32秒・無音）
 - `out/processhot_stories_15s.mp4` … ストーリーズ用短縮版（15秒・無音）
 - `out/processhot_cover.png` … カバー画像（1080×1920、中央にタイトル）
+- `out/*_intertight.*` … 重ねる文字をサイト配信フォント Inter Tight だけにした版（テロップは英語。`render.js reel-en` / `story-en`）
 - `photos/` … 架空のコーヒー写真（AI生成。実在の店・商品ではない）
 - `cap/` … 本番サイト https://processhot.com を iPhone エミュレーションで実際に操作して取得した各画面と、サイトが出力した完成画像（`final.jpg`）
 - `work/` … 動画の元（`video.html` をフレーム単位で描画 → ffmpeg）

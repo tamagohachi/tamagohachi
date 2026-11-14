@@ -92,7 +92,8 @@ const lerp = (a, b, x) => a + (b - a) * x;
 // 0→1 over [a, a+din], hold, 1→0 over [b-dout, b]
 const win = (t, a, b, din = .35, dout = .25) => Math.min(prog(t, a, a + din), 1 - prog(t, b - dout, b));
 
-const V = new URLSearchParams(location.search).get('v') || 'reel';
+const QS = new URLSearchParams(location.search), V = QS.get('v') || 'reel', EN = QS.get('lang') === 'en';
+if (EN) document.body.style.fontFamily = '"Inter Tight"'; // overlay text in the site-served font only
 const D = window.DATA, C = D.cafe, st = Object.fromEntries(C.states.map((s) => [s.label, s]));
 const img = (name, file) => `../cap/${name}/${file}`;
 const FINALS = ['cafe', 'home', 'beans', 'iced'].map((n) => img(n, 'final.jpg'));
@@ -149,6 +150,14 @@ if (V === 'reel') {
 $('#heroRaw').src = '../photos/cafe.jpg'; $('#heroFinal').src = FINALS[0];
 $('#factsBg').src = FINALS[0]; $('#liftImg').src = img('cafe', 'cv_country.jpg');
 const gal = FINALS.map((f, i) => { const im = new Image(); im.className = 'fill'; im.src = f; $('#gallery').appendChild(im); return im; });
+if (EN) { // Inter Tight only: English lines become the telop, no Japanese overlay text
+  T.telops.forEach((o) => {
+    if (o.cls === 'name') { o.html = '<span>PROCES</span><b>SHOT</b>'; return; }
+    const pre = (o.html.match(/^<small>\d+<\/small>/) || [''])[0];
+    o.html = pre + o.en.replace('@hakko.3d', '<span class="at">@hakko.3d</span>').replace(/\. (?=\S)/g, '.<br>'); o.en = '';
+  });
+  $('#end .yomi').style.display = 'none'; $('#end .cta p').innerHTML = 'Link in profile<span>processhot.com</span>';
+}
 const tel = T.telops.map((o) => {
   const e = document.createElement('div'); e.className = o.cls || 'telop'; e.innerHTML = o.html + (o.en ? `<span class="en">${o.en}</span>` : ''); e.style.top = o.y + 'px';
   $('#telops').appendChild(e); return e;
@@ -161,7 +170,8 @@ window.cover = () => {
   window.seek(2.6); tel.forEach((e) => e.style.opacity = 0);
   $('#hero .shade').style.cssText = 'height:100%;background:rgba(14,14,14,.5)';
   const c = document.createElement('div'); c.className = 'telop'; c.style.cssText = 'opacity:1;top:700px;font-size:84px';
-  c.innerHTML = '何を飲んだか、<br>まで投稿できる。<span class="sub" style="font-size:34px;letter-spacing:.12em;margin-top:44px"><span style="font-weight:500">PROCES</span><b style="font-weight:900">SHOT</b></span>';
+  c.innerHTML = (EN ? 'Share what you<br>actually drank.' : '何を飲んだか、<br>まで投稿できる。') + '<span class="sub" style="font-size:34px;letter-spacing:.12em;margin-top:44px"><span style="font-weight:500">PROCES</span><b style="font-weight:900">SHOT</b></span>';
+  if (EN) c.style.letterSpacing = '0';
   $('#telops').appendChild(c);
 };
 window.seek = (t) => {
