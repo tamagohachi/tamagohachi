@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>PROCESSHOT PV</title>
+<style>
+/* Fonts: only the site's own stack — Inter Tight (served by the site) + Noto Sans JP (in the site's CSS font stack). */
+@font-face{font-family:"Inter Tight";src:url("../site/fonts/inter-tight.woff2") format("woff2");font-weight:100 900}
+@font-face{font-family:"Noto Sans JP";src:url("../fonts/NotoSansJP.ttf") format("truetype");font-weight:100 900}
+/* Colours: the site's four — ink, paper, gray, vermilion. */
+:root{--ink:#0E0E0E;--paper:#F5F4F0;--gray:#8A8A86;--acc:#FF4A1C;--line:rgba(138,138,134,.3)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--ink)}
+body{color:var(--paper);font-family:"Inter Tight","Noto Sans JP",sans-serif;font-feature-settings:"palt";-webkit-font-smoothing:antialiased}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:var(--ink)}
+.layer{position:absolute;inset:0;opacity:0;will-change:opacity,transform}
+.fill{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.shade{position:absolute;left:0;right:0;top:0;height:760px;background:linear-gradient(to bottom,rgba(14,14,14,.62),rgba(14,14,14,0))}
+
+/* telop */
+.telop{position:absolute;left:72px;right:72px;text-align:center;opacity:0;font-weight:800;font-size:68px;line-height:1.3;letter-spacing:.02em}
+.telop small{display:block;font-size:30px;font-weight:600;letter-spacing:.16em;color:var(--acc);margin-bottom:14px}
+.telop .sub{display:block;font-size:44px;font-weight:600;margin-top:22px;letter-spacing:.03em}
+.name{position:absolute;left:0;right:0;text-align:center;opacity:0;font-size:30px;letter-spacing:.12em}
+.name b{font-weight:900}.name span{font-weight:500}
+.name i{font-style:normal;font-weight:500;font-size:26px;letter-spacing:.08em;opacity:.7;margin-left:20px}
+
+/* phone */
+#phone{position:absolute;overflow:hidden;border-radius:50px;border:1.5px solid var(--line);background:var(--ink)}
+#phone img{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0}
+#tap{position:absolute;width:92px;height:92px;margin:-46px 0 0 -46px;border-radius:50%;background:var(--paper);opacity:0}
+#lift{position:absolute;overflow:hidden;opacity:0}
+#lift img{position:absolute;inset:0;width:100%;height:100%}
+
+/* facts */
+#factsBg{position:absolute;inset:-160px;width:calc(100% + 320px);height:calc(100% + 320px);object-fit:cover;filter:blur(70px) brightness(.5)}
+.big{font-size:104px;font-weight:800;letter-spacing:.02em;line-height:1.2}
+
+/* end card */
+#end .mark{position:absolute;left:0;right:0;top:500px;text-align:center;font-size:52px;letter-spacing:.12em}
+#end .mark b{font-weight:900}#end .mark span{font-weight:500}
+#end .yomi{position:absolute;left:0;right:0;top:584px;text-align:center;font-size:26px;font-weight:500;letter-spacing:.3em;color:var(--gray)}
+#end .cta{position:absolute;left:96px;top:1330px;display:flex;align-items:center;gap:36px;opacity:0}
+#end .cta svg{width:84px;height:84px;flex:none}
+#end .cta p{font-size:42px;font-weight:700;letter-spacing:.02em;line-height:1.35}
+#end .cta p span{display:block;font-size:32px;font-weight:600;letter-spacing:.04em;color:var(--gray)}
+.at{color:var(--acc)}
+</style>
+</head>
+<body>
+<div id="stage">
+  <!-- cuts 1–2 : photo → finished image -->
+  <div class="layer" id="hero">
+    <div id="heroZoom" style="position:absolute;inset:0;transform-origin:50% 72%">
+      <img class="fill" id="heroRaw"><img class="fill" id="heroFinal">
+    </div>
+    <div class="shade"></div>
+  </div>
+
+  <!-- cuts 3–6 : the site, driven for real -->
+  <div class="layer" id="ui">
+    <div id="phone"></div>
+    <div id="tap"></div>
+  </div>
+  <div id="lift"><img id="liftImg"><div class="shade"></div></div>
+
+  <!-- cut 7 -->
+  <div class="layer" id="facts"><img id="factsBg"></div>
+
+  <!-- cut 8 -->
+  <div class="layer" id="gallery"><div class="shade" style="z-index:1"></div></div>
+  <div class="layer" id="end">
+    <div class="mark"><span>PROCES</span><b>SHOT</b></div>
+    <div class="yomi">プロセスショット</div>
+    <div class="cta"><svg viewBox="0 0 120 120" fill="none" stroke="#F5F4F0" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M104 16 L16 104"/><path d="M16 40 V104 H80"/></svg><p>プロフィールのリンクから<span>processhot.com</span></p></div>
+  </div>
+
+  <div id="telops"></div>
+</div>
+<script src="data.js"></script>
+<script>
+const $ = (q) => document.querySelector(q);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const outCubic = (x) => 1 - Math.pow(1 - x, 3);
+const inOut = (x) => (x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+const outExpo = (x) => (x >= 1 ? 1 : 1 - Math.pow(2, -10 * x));
+const lerp = (a, b, x) => a + (b - a) * x;
+// 0→1 over [a, a+din], hold, 1→0 over [b-dout, b]
+const win = (t, a, b, din = .35, dout = .25) => Math.min(prog(t, a, a + din), 1 - prog(t, b - dout, b));
+
+const V = new URLSearchParams(location.search).get('v') || 'reel';
+const D = window.DATA, C = D.cafe, st = Object.fromEntries(C.states.map((s) => [s.label, s]));
+const img = (name, file) => `../cap/${name}/${file}`;
+const FINALS = ['cafe', 'home', 'beans', 'iced'].map((n) => img(n, 'final.jpg'));
+
+/* ---------- phone geometry ---------- */
+const PH = { w: 680, x: 200, y: 436 }; PH.k = PH.w / C.vw; PH.h = C.vh * PH.k;
+const phone = $('#phone');
+Object.assign(phone.style, { left: PH.x + 'px', top: PH.y + 'px', width: PH.w + 'px', height: PH.h + 'px' });
+const shots = {};
+for (const s of C.states) { const i = new Image(); i.src = img('cafe', s.file); phone.appendChild(i); shots[s.label] = i; }
+
+/* ---------- timelines ---------- */
+const typed = C.states.filter((s) => s.label.startsWith('place_type')).map((s) => s.label);
+let T;
+if (V === 'reel') {
+  const screens = [[6.9, 'top'], [8.5, 'photo'], [10.5, 'proc'], [12.0, 'proc_main'], [13.2, 'country'], [16.7, 'place'], [17.4, 'place_shop'],
+    ...typed.map((l, i) => [17.7 + i * (1.1 / typed.length), l]), [19.3, 'preview_full'], [20.8, 'preview_label'], [21.9, 'preview_back'], [22.8, 'saved']];
+  T = {
+    dur: 32, screens,
+    taps: [[8.4, 'top'], [10.4, 'photo'], [11.9, 'proc'], [13.1, 'proc_main'], [16.6, 'country'], [17.3, 'place'], [19.2, typed[typed.length - 1]], [20.7, 'preview_full'], [21.8, 'preview_label'], [22.7, 'preview_back']],
+    hero: [0, 7.15], heroSwap: 1.7, ui: [6.95, 24.1], lift: { on: 13.2, up: [13.4, 14.15], down: [15.2, 15.9] },
+    facts: [23.9, 27.1], gallery: [27, 29.4], end: [29.4, 32],
+    telops: [
+      { a: .35, b: 1.65, y: 250, html: 'このコーヒー、<br>何か分かる？' },
+      { a: 1.8, b: 3.15, y: 250, html: 'こうすれば、<br>分かる。' },
+      { a: 3.35, b: 6.85, y: 250, html: 'プロセスまで、写す。' },
+      { a: 3.7, b: 6.85, y: 362, cls: 'name', html: '<span>PROCES</span><b>SHOT</b><i>プロセスショット</i>' },
+      { a: 7.2, b: 10.9, y: 262, html: '<small>01</small>写真を選ぶ' },
+      { a: 11.05, b: 15.85, y: 262, html: '<small>02</small>プロセスを選ぶ' },
+      { a: 16.0, b: 19.85, y: 262, html: '<small>03</small>産地とお店' },
+      { a: 20.0, b: 23.85, y: 262, html: '完成。<span class="sub">そのままストーリーズへ</span>' },
+      { a: 24.2, b: 26.95, y: 800, cls: 'telop big', html: '無料・登録なし<span class="sub" style="font-size:52px;margin-top:36px">写真は端末の外に出ません</span>' },
+      { a: 27.1, b: 29.4, y: 250, dout: .01, html: 'プロフィールのリンクから' },
+      { a: 29.7, b: 33, y: 790, html: '投稿するとき<br><span class="at">@hakko.3d</span> を<br>メンションしてね' },
+    ],
+  };
+} else { // 15s stories cut — no narration needed
+  const fast = ['top', 'photo', 'proc', 'proc_main', 'country', 'place', 'place_shop', typed[Math.floor(typed.length / 2)], typed[typed.length - 1], 'preview_full', 'saved'];
+  const t0 = 3.3, step = 5.4 / fast.length;
+  T = {
+    dur: 15, screens: fast.map((l, i) => [t0 + i * step, l]),
+    taps: fast.slice(0, -1).filter((l) => st[l].tap).map((l) => [t0 + (fast.indexOf(l) + 1) * step - .08, l]),
+    hero: [0, 3.35], heroSwap: 1.5, ui: [3.2, 9.2], lift: null,
+    facts: null, gallery: null, end: null, outro: [9, 15],
+    telops: [
+      { a: .3, b: 3.2, y: 250, html: '何を飲んだか、<br>まで投稿できる。' },
+      { a: 3.5, b: 8.95, y: 262, html: '写真を選んで、<span class="sub">プロセスを選ぶだけ</span>' },
+      { a: 9.4, b: 16, y: 300, html: '無料・登録なし。<span class="sub">メンションしてくれたら嬉しいです<br><b style="font-weight:800">@hakko.3d</b></span>' },
+    ],
+  };
+}
+
+/* ---------- static content ---------- */
+$('#heroRaw').src = '../photos/cafe.jpg'; $('#heroFinal').src = FINALS[0];
+$('#factsBg').src = FINALS[0]; $('#liftImg').src = img('cafe', 'cv_country.jpg');
+const gal = FINALS.map((f, i) => { const im = new Image(); im.className = 'fill'; im.src = f; $('#gallery').appendChild(im); return im; });
+const tel = T.telops.map((o) => {
+  const e = document.createElement('div'); e.className = o.cls || 'telop'; e.innerHTML = o.html; e.style.top = o.y + 'px';
+  $('#telops').appendChild(e); return e;
+});
+const set = (e, op, tr) => { e.style.opacity = op.toFixed(4); if (tr !== undefined) e.style.transform = tr; };
+
+/* ---------- one frame ---------- */
+window.DUR = T.dur;
+window.seek = (t) => {
+  // cuts 1–2: photo, then the same photo as a finished image; slow push toward the process name
+  const hOp = win(t, T.hero[0] - 1, T.hero[1], .01, .35);
+  set($('#hero'), hOp);
+  $('#heroFinal').style.opacity = prog(t, T.heroSwap, T.heroSwap + .12);
+  const z = V === 'reel' ? 1 + .03 * prog(t, 0, 3.2) + .06 * inOut(prog(t, 3.0, 7.2)) : 1 + .05 * prog(t, 0, 3.4);
+  $('#heroZoom').style.transform = `scale(${z.toFixed(5)})`;
+
+  // cuts 3–6: the site
+  const uOp = win(t, T.ui[0], T.ui[1], .45, .3), uIn = outCubic(prog(t, T.ui[0], T.ui[0] + .7));
+  set($('#ui'), uOp, `translateY(${lerp(40, 0, uIn).toFixed(2)}px)`);
+  let cur = 0; T.screens.forEach((s, i) => { if (t >= s[0]) cur = i; });
+  const seen = new Set();
+  T.screens.forEach((s, i) => {
+    const el = shots[s[1]]; if (seen.has(el)) return;
+    if (i === cur) { el.style.opacity = prog(t, s[0], s[0] + .1); el.style.zIndex = 2; seen.add(el); }
+    else if (i === cur - 1) { el.style.opacity = 1; el.style.zIndex = 1; seen.add(el); }
+  });
+  for (const k in shots) if (!seen.has(shots[k])) { shots[k].style.opacity = 0; shots[k].style.zIndex = 0; }
+  // tap indicator: appears, presses at tap time, releases
+  let tOp = 0, tSc = 1, tx = 0, ty = 0;
+  for (const [tt, label] of T.taps) {
+    if (t >= tt - .3 && t <= tt + .3) {
+      const p = st[label].tap; tx = PH.x + p.x * PH.k; ty = PH.y + p.y * PH.k;
+      if (t < tt) { const a = outCubic(prog(t, tt - .3, tt - .08)); tOp = .5 * a; tSc = lerp(1.25, .82, a); }
+      else { const a = outCubic(prog(t, tt, tt + .3)); tOp = .5 * (1 - a); tSc = lerp(.82, 1.5, a); }
+    }
+  }
+  set($('#tap'), tOp, `translate(${tx.toFixed(1)}px,${ty.toFixed(1)}px) scale(${tSc.toFixed(4)})`);
+
+  // the key moment: the site's own canvas lifts out of the screen to full frame
+  const L = $('#lift');
+  if (T.lift && t >= T.lift.on && t < T.lift.down[1]) {
+    const c = st.proc.cv, r0 = { x: PH.x + c.x * PH.k, y: PH.y + c.y * PH.k, w: c.width * PH.k, h: c.height * PH.k };
+    const a = inOut(prog(t, ...T.lift.up)) - inOut(prog(t, ...T.lift.down));
+    Object.assign(L.style, { opacity: 1, left: lerp(r0.x, 0, a) + 'px', top: lerp(r0.y, 0, a) + 'px', width: lerp(r0.w, 1080, a) + 'px', height: lerp(r0.h, 1920, a) + 'px' });
+    L.querySelector('.shade').style.opacity = a;
+  } else L.style.opacity = 0;
+
+  // cut 7
+  if (T.facts) set($('#facts'), win(t, T.facts[0], T.facts[1], .4, .2));
+  // cut 8: finished images, hard cuts; then the closing card
+  if (T.gallery) {
+    const [g0, g1] = T.gallery, on = t >= g0 && t < g1; set($('#gallery'), on ? 1 : 0);
+    const step = (g1 - g0) / gal.length, idx = clamp(Math.floor((t - g0) / step), 0, gal.length - 1);
+    gal.forEach((im, i) => { im.style.opacity = i === idx ? 1 : 0; im.style.transform = `scale(${(1.05 - .05 * outExpo(prog(t, g0 + i * step, g0 + (i + 1) * step))).toFixed(5)})`; });
+  }
+  if (T.end) {
+    set($('#end'), t >= T.end[0] ? 1 : 0);
+    const a = outCubic(prog(t, T.end[0] + .1, T.end[0] + .7));
+    for (const q of ['.mark', '.yomi']) set($('#end ' + q), a, `translateY(${lerp(16, 0, a).toFixed(2)}px)`);
+    const b = outCubic(prog(t, T.end[0] + .9, T.end[0] + 1.5));
+    set($('#end .cta'), b, `translateY(${lerp(16, 0, b).toFixed(2)}px)`);
+  }
+  if (T.outro) { // stories cut: finished image, room left for the link sticker
+    const a = win(t, T.outro[0], T.outro[1] + 2, .4, .2);
+    set($('#gallery'), a); gal.forEach((im, i) => { im.style.opacity = i === 0 ? 1 : 0; im.style.transform = `scale(${(1.04 - .04 * prog(t, T.outro[0], T.outro[1])).toFixed(5)})`; });
+  }
+
+  // telops: rise 14px and fade in, fade out in place
+  T.telops.forEach((o, i) => {
+    const a = outCubic(prog(t, o.a, o.a + .5)), out = 1 - prog(t, o.b - (o.dout || .25), o.b);
+    set(tel[i], Math.min(a, out), `translateY(${lerp(14, 0, a).toFixed(2)}px)`);
+  });
+};
+window.ready = Promise.all([document.fonts.load('800 68px "Inter Tight"'), document.fonts.load('800 68px "Noto Sans JP"', 'あ写'), document.fonts.load('500 26px "Noto Sans JP"', 'あ写'), document.fonts.load('600 44px "Noto Sans JP"', 'あ写'),
+  ...[...document.images].map((i) => i.decode().catch(() => {}))]).then(() => document.fonts.ready);
+</script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+{
+ "vw": 393,
+ "vh": 720,
+ "states": [
+  {
+   "label": "top",
+   "file": "00_top.png",
+   "tap": {
+    "x": 196.5,
+    "y": 556
+   }
+  },
+  {
+   "label": "photo",
+   "file": "01_photo.png",
+   "tap": {
+    "x": 196.5,
+    "y": 566.796875
+   },
+   "cv": {
+    "x": 75,
+    "y": 52,
+    "width": 243,
+    "height": 432
+   }
+  },
+  {
+   "label": "proc",
+   "file": "02_proc.png",
+   "tap": {
+    "x": 105.75,
+    "y": 392
+   },
+   "cv": {
+    "x": 115.5,
+    "y": 52,
+    "width": 162,
+    "height": 288
+   }
+  },
+  {
+   "label": "country",
+   "file": "03_country.png",
+   "tap": {
+    "x": 177.875,
+    "y": 384
+   }
+  },
+  {
+   "label": "place",
+   "file": "04_place.png",
+   "tap": {
+    "x": 287.25,
+    "y": 392
+   }
+  },
+  {
+   "label": "saved",
+   "file": "05_saved.png",
+   "tap": null
+  }
+ ]
+}

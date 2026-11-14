@@ -1,0 +1,114 @@
+{
+ "vw": 393,
+ "vh": 720,
+ "states": [
+  {
+   "label": "top",
+   "file": "00_top.png",
+   "tap": {
+    "x": 196.5,
+    "y": 556
+   }
+  },
+  {
+   "label": "photo",
+   "file": "01_photo.png",
+   "tap": {
+    "x": 196.5,
+    "y": 566.796875
+   },
+   "cv": {
+    "x": 75,
+    "y": 52,
+    "width": 243,
+    "height": 432
+   }
+  },
+  {
+   "label": "proc",
+   "file": "02_proc.png",
+   "tap": {
+    "x": 105.75,
+    "y": 466
+   },
+   "cv": {
+    "x": 115.5,
+    "y": 52,
+    "width": 162,
+    "height": 288
+   }
+  },
+  {
+   "label": "proc_main",
+   "file": "03_proc_main.png",
+   "tap": {
+    "x": 281.0078125,
+    "y": 536
+   }
+  },
+  {
+   "label": "country",
+   "file": "04_country.png",
+   "tap": {
+    "x": 293.5859375,
+    "y": 440
+   }
+  },
+  {
+   "label": "place",
+   "file": "05_place.png",
+   "tap": {
+    "x": 105.75,
+    "y": 392
+   }
+  },
+  {
+   "label": "place_shop",
+   "file": "06_place_shop.png",
+   "tap": null
+  },
+  {
+   "label": "place_type02",
+   "file": "07_place_type02.png",
+   "tap": null
+  },
+  {
+   "label": "place_type04",
+   "file": "08_place_type04.png",
+   "tap": null
+  },
+  {
+   "label": "place_type06",
+   "file": "09_place_type06.png",
+   "tap": null
+  },
+  {
+   "label": "place_type08",
+   "file": "10_place_type08.png",
+   "tap": null
+  },
+  {
+   "label": "place_type10",
+   "file": "11_place_type10.png",
+   "tap": null
+  },
+  {
+   "label": "place_type12",
+   "file": "12_place_type12.png",
+   "tap": null
+  },
+  {
+   "label": "place_type14",
+   "file": "13_place_type14.png",
+   "tap": {
+    "x": 336,
+    "y": 462
+   }
+  },
+  {
+   "label": "saved",
+   "file": "14_saved.png",
+   "tap": null
+  }
+ ]
+}
