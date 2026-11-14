@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0E0E0E" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F5F4F0" media="(prefers-color-scheme: light)">
+<meta name="description" content="飲んだコーヒーの写真に、精製プロセス（ウォッシュド・ナチュラル・ハニー・アナエロビックなど）と産地・店名を重ねたシェア画像をつくる無料ツール。登録不要。写真は端末の外に出ません。">
+<meta property="og:title" content="PROCESSHOT｜コーヒーの精製プロセスを写真に重ねる">
+<meta property="og:description" content="飲んだ一杯の写真に、精製プロセスと産地を重ねたシェア画像をつくる。無料・登録不要。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://processhot.com/">
+<link rel="canonical" href="https://processhot.com/">
+<meta property="og:site_name" content="PROCESSHOT">
+<title>PROCESSHOT｜コーヒーの精製プロセスを写真に重ねる</title>
+<link rel="preload" href="fonts/inter-tight.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<p id="iab" class="iab" hidden>保存がうまくいかない場合は、右上のメニューから Safari / Chrome で開いてください。</p>
+
+<!-- S0 トップ -->
+<main id="s0" class="top">
+  <canvas id="sample" class="sample" width="1080" height="1920" role="img" aria-label="シェア画像の例。写真の上に ANAEROBIC NATURAL、産地、店名、日付が重なっている"></canvas>
+  <button id="start" class="primary">はじめる</button>
+  <footer>
+    <p>写真も記録も、この端末の外に出ません。</p>
+    <p><a href="privacy.html">プライバシー</a>　<a href="https://www.instagram.com/hakko.3d/" rel="noopener noreferrer">@hakko.3d</a>　<button id="clear" class="link">入力補助のデータを消す</button></p>
+  </footer>
+</main>
+
+<!-- S1〜S5 -->
+<main id="flow" class="flow" hidden>
+  <header>
+    <button id="back" class="icon" aria-label="戻る">←</button>
+    <span id="stepname"></span>
+    <button id="jump" class="link">このまま作る</button>
+  </header>
+  <div class="stage"><canvas id="cv" width="1080" height="1920"></canvas></div>
+
+  <section id="p1" class="panel" hidden>
+    <p class="hint">ドラッグで位置、ピンチで拡大</p>
+    <button id="usephoto" class="primary">この写真で進む</button>
+    <button id="repick" class="ghost">選び直す</button>
+  </section>
+
+  <section id="p2" class="panel" hidden>
+    <div id="procMain" class="grid2"></div>
+    <div id="procSub" class="chips"></div>
+    <div id="procFreeWrap" hidden>
+      <form id="procFreeForm" class="inline">
+        <input id="procFree" type="text" maxlength="12" placeholder="自由入力（12文字まで）" autocomplete="off" enterkeyhint="done">
+        <button class="ghost">決定</button>
+      </form>
+    </div>
+    <button id="skip2" class="link skip">わからない・スキップ</button>
+  </section>
+
+  <section id="p3" class="panel" hidden>
+    <div id="cRecentWrap"><p class="cap">最近</p><div id="cRecent" class="chips"></div></div>
+    <div id="cTop" class="chips"></div>
+    <button id="cMore" class="ghost">ほかの国</button>
+    <div id="cAll" hidden>
+      <input id="cFilter" type="text" placeholder="国名で絞り込む" autocomplete="off">
+      <div id="cList" class="list"></div>
+    </div>
+    <button id="skip3" class="link skip">スキップ</button>
+  </section>
+
+  <section id="p4" class="panel" hidden>
+    <div id="placeMode" class="grid2">
+      <button class="big" data-m="shop">店舗</button>
+      <button class="big" data-m="home">自宅</button>
+    </div>
+    <div id="shopWrap" hidden>
+      <div id="shopRecent" class="chips"></div>
+      <form id="shopForm" class="inline">
+        <input id="shop" type="text" maxlength="40" placeholder="店舗名" autocomplete="off" enterkeyhint="done">
+        <button class="ghost">決定</button>
+      </form>
+    </div>
+    <p class="hint">位置情報は使いません。自宅は「HOME」とだけ表示します。</p>
+    <button id="skip4" class="link skip">スキップ</button>
+  </section>
+
+  <section id="p5" class="panel" hidden>
+    <div class="segs">
+      <div class="seg" role="group" aria-label="型">
+        <button data-set="pattern=A">FULL</button><button data-set="pattern=B">LABEL</button>
+      </div>
+      <div class="seg" role="group" aria-label="縦横比">
+        <button data-set="ratio=9:16">9:16</button><button data-set="ratio=4:5">4:5</button>
+      </div>
+      <div class="seg" id="bgSeg" role="group" aria-label="地色">
+        <button data-set="bg=paper">紙</button><button data-set="bg=ink">墨</button>
+      </div>
+    </div>
+    <button id="save" class="primary">保存・シェア</button>
+    <div id="edit" class="list"></div>
+    <label class="row"><span class="k">日付</span><input id="date" type="date"></label>
+  </section>
+</main>
+
+<!-- S6 完了 -->
+<main id="s6" class="top" hidden>
+  <h1>保存しました</h1>
+  <img id="result" class="sample" alt="生成したシェア画像">
+  <p class="hint">保存されていない場合は、画像を長押しして保存できます。</p>
+  <button id="again" class="primary">もう一杯記録する</button>
+</main>
+
+<input id="file" class="vh" type="file" accept="image/*" aria-hidden="true" tabindex="-1">
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

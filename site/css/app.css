@@ -1,0 +1,72 @@
+@font-face{font-family:"Inter Tight";src:url("../fonts/inter-tight.woff2") format("woff2");font-weight:100 900;font-display:swap}
+
+/* 色は4色まで：墨・紙・灰・朱 */
+:root{--bg:#F5F4F0;--fg:#0E0E0E;--gray:#8A8A86;--acc:#FF4A1C;--line:rgba(138,138,134,.3)}
+@media(prefers-color-scheme:dark){:root{--bg:#0E0E0E;--fg:#F5F4F0}}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:500 16px/1.6 "Inter Tight","Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans CJK JP","Noto Sans JP","Yu Gothic",sans-serif;font-feature-settings:"palt"}
+[hidden]{display:none!important}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0}
+a{color:inherit}
+.vh{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+main{max-width:480px;margin:0 auto;padding:0 20px}
+
+/* ボタン：丸端。入力欄：角丸14px。影なし */
+.primary{display:block;width:100%;min-height:56px;border-radius:999px;background:var(--acc);color:#0E0E0E;font-weight:800}
+.primary:disabled{opacity:.4}
+.ghost{min-height:48px;padding:0 20px;border-radius:999px;border:1px solid var(--line)}
+.link{color:var(--gray);font-size:13px;text-decoration:underline;text-underline-offset:3px;min-height:48px}
+.icon{width:48px;height:48px;font-size:20px}
+input[type=text],input[type=date]{min-height:48px;padding:0 14px;border:1px solid var(--line);border-radius:14px;background:none;width:100%}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+
+/* S0・S6 */
+.top{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding-top:24px;padding-bottom:24px;text-align:center}
+.top h1{font-size:28px;font-weight:800;letter-spacing:.02em;margin:0}
+.sample{height:64svh;width:auto;max-width:100%;display:block}
+.top footer{font-size:13px;color:var(--gray)}
+.top footer p{margin:0}
+.iab{margin:0;padding:10px 20px;font-size:13px;text-align:center;border-bottom:1px solid var(--line)}
+.hint{font-size:13px;color:var(--gray);margin:0;text-align:center}
+
+/* S1〜S5 */
+.flow header{display:grid;grid-template-columns:48px 1fr auto;align-items:center;height:52px;margin:0 -12px}
+#stepname{font-size:13px;font-weight:700;letter-spacing:.12em;text-align:center}
+#jump{min-width:48px;padding-right:12px}
+.stage{display:flex;justify-content:center}
+#cv{height:40svh;width:auto;max-width:100%;display:block}
+.flow[data-step="1"] #cv{height:60svh;touch-action:none;cursor:grab}
+.flow[data-step="5"] #cv{height:52svh}
+.panel{display:flex;flex-direction:column;gap:14px;padding:20px 0 32px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.big{min-height:64px;border:1px solid var(--line);border-radius:14px;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips:empty{display:none}
+.chip{min-height:48px;padding:0 18px;border:1px solid var(--line);border-radius:999px}
+.big[aria-pressed=true],.chip[aria-pressed=true],.seg button[aria-pressed=true]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.cap{font-size:13px;color:var(--gray);margin:0 0 8px}
+.inline{display:flex;gap:8px}
+.inline input{flex:1;min-width:0}
+#shopWrap{display:flex;flex-direction:column;gap:14px}
+.skip{align-self:center}
+.list{display:flex;flex-direction:column}
+#cAll{display:flex;flex-direction:column;gap:8px}
+#cList{max-height:38svh;overflow:auto}
+.row{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:48px;border-bottom:1px solid var(--line);text-align:left;width:100%}
+.row .k{font-size:13px;color:var(--gray);flex:none}
+.row .v{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row input[type=date]{width:auto;border:0;padding:0;text-align:right}
+.segs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.seg{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.seg button{min-height:44px;padding:0 16px;font-size:13px;font-weight:700;letter-spacing:.06em}
+
+/* プライバシーのページ */
+.doc{padding-top:32px;padding-bottom:48px}
+.doc h1{font-size:28px;font-weight:800;margin:0 0 16px}
+.doc h2{font-size:16px;margin:32px 0 8px}
+.doc table{width:100%;border-collapse:collapse;font-size:13px}
+.doc th,.doc td{text-align:left;vertical-align:top;padding:8px 8px 8px 0;border-bottom:1px solid var(--line)}
+.doc th{color:var(--gray);font-weight:600}
