@@ -1,5 +1,7 @@
 // 仮称。サービス名が決まったらここだけ変える（画像のワードマークに使う）
 export const WORDMARK = "ONE CUP";
+// ワードマークの横に小さく併記する発信元のアカウント
+export const HANDLE = "@hakko.3d";
 
 // hero: 画像に載せる主役の行。tag: 主役に親の語が含まれないときラベル行に添える親
 export const PROC = [

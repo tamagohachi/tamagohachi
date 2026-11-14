@@ -1,5 +1,5 @@
 // シェア画像の描画（設計書 4章）。Canvas 2D のみ。外部通信なし。
-import { PROC, WORDMARK } from "./data.js";
+import { PROC, WORDMARK, HANDLE } from "./data.js";
 
 const INK = "#0E0E0E", PAPER = "#F5F4F0";
 const JP = '"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans CJK JP","Noto Sans JP","Yu Gothic",sans-serif';
@@ -83,7 +83,13 @@ function textBlock(ctx, s, o) {
   ctx.globalAlpha = 0.7; ctx.font = `600 26px ${F_TXT}`;
   if (hero.label) tracked(ctx, hero.label, MX, base(y, 26, 26), 26 * 0.16);
   ctx.globalAlpha = 0.8; ctx.font = `700 22px ${F_TXT}`;
-  tracked(ctx, WORDMARK, W - MX, base(y, head || 22, 22), 22 * 0.12, true);
+  // 右端から：アカウント名（小さく）、その左にワードマーク
+  const by = base(y, head || 22, 22);
+  ctx.globalAlpha = 0.7; ctx.font = `600 18px ${F_TXT}`; ctx.textAlign = "right";
+  ctx.fillText(HANDLE, W - MX, by);
+  const hw = ctx.measureText(HANDLE).width; ctx.textAlign = "left";
+  ctx.globalAlpha = 0.8; ctx.font = `700 22px ${F_TXT}`;
+  tracked(ctx, WORDMARK, W - MX - hw - 16, by, 22 * 0.12, true);
   ctx.globalAlpha = 1;
   y += head;
   // 主役
