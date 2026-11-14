@@ -88,8 +88,14 @@ function textBlock(ctx, s, o) {
   ctx.globalAlpha = 0.7; ctx.font = `600 18px ${F_TXT}`; ctx.textAlign = "right";
   ctx.fillText(HANDLE, W - MX, by);
   const hw = ctx.measureText(HANDLE).width; ctx.textAlign = "left";
-  ctx.globalAlpha = 0.8; ctx.font = `700 22px ${F_TXT}`;
-  tracked(ctx, WORDMARK, W - MX - hw - 16, by, 22 * 0.12, true);
+  // ワードマークは部分ごとに太さを変え、右から順に置く
+  let wx = W - MX - hw - 16;
+  const tr = 22 * 0.12;
+  for (const [txt, wt] of [...WORDMARK].reverse()) {
+    ctx.globalAlpha = wt >= 700 ? 1 : 0.8; ctx.font = `${wt} 22px ${F_TXT}`;
+    tracked(ctx, txt, wx, by, tr, true);
+    wx -= [...txt].reduce((a, c) => a + ctx.measureText(c).width + tr, 0);
+  }
   ctx.globalAlpha = 1;
   y += head;
   // 主役

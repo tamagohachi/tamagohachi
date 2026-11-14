@@ -1,5 +1,6 @@
 // サービス名（画像のワードマークに使う）
-export const WORDMARK = "PROCESSHOT";
+// [文字, 太さ] の並び。SHOT だけ太くして「プロセス・ショット」の区切りを見せる
+export const WORDMARK = [["PROCES", 500], ["SHOT", 900]];
 // ワードマークの横に小さく併記する発信元のアカウント
 export const HANDLE = "@hakko.3d";
 
