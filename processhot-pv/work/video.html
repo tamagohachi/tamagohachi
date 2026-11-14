@@ -92,18 +92,21 @@ const lerp = (a, b, x) => a + (b - a) * x;
 // 0→1 over [a, a+din], hold, 1→0 over [b-dout, b]
 const win = (t, a, b, din = .35, dout = .25) => Math.min(prog(t, a, a + din), 1 - prog(t, b - dout, b));
 
-const QS = new URLSearchParams(location.search), V = QS.get('v') || 'reel', EN = QS.get('lang') === 'en';
+const QS = new URLSearchParams(location.search), V = QS.get('v') || 'reel', EN = QS.get('lang') === 'en', CV = QS.get('ui') === 'canvas';
 if (EN) document.body.style.fontFamily = '"Inter Tight"'; // overlay text in the site-served font only
 const D = window.DATA, C = D.cafe, st = Object.fromEntries(C.states.map((s) => [s.label, s]));
 const img = (name, file) => `../cap/${name}/${file}`;
 const FINALS = ['cafe', 'home', 'beans', 'iced'].map((n) => img(n, 'final.jpg'));
 
 /* ---------- phone geometry ---------- */
-const PH = { w: 680, x: 200, y: 452 }; PH.k = PH.w / C.vw; PH.h = C.vh * PH.k;
+const PH = CV ? { w: 620, x: 230, y: 452 } : { w: 680, x: 200, y: 452 }; PH.k = PH.w / C.vw; PH.h = CV ? PH.w * 16 / 9 : C.vh * PH.k;
+// canvas mode: show only the image the site draws (all Inter Tight), not the Japanese UI around it
+const cvFile = (l) => (l === 'top' ? 'cv_photo.jpg' : l === 'saved' ? 'final.jpg' : `cv_${l}.jpg`);
+if (CV) { $('#phone').style.borderRadius = '0'; $('#phone').style.border = '0'; $('#tap').style.display = 'none'; }
 const phone = $('#phone');
 Object.assign(phone.style, { left: PH.x + 'px', top: PH.y + 'px', width: PH.w + 'px', height: PH.h + 'px' });
 const shots = {};
-for (const s of C.states) { const i = new Image(); i.src = img('cafe', s.file); phone.appendChild(i); shots[s.label] = i; }
+for (const s of C.states) { const i = new Image(); i.src = img('cafe', CV ? cvFile(s.label) : s.file); phone.appendChild(i); shots[s.label] = i; }
 
 /* ---------- timelines ---------- */
 const typed = C.states.filter((s) => s.label.startsWith('place_type')).map((s) => s.label);
@@ -207,7 +210,7 @@ window.seek = (t) => {
   // the key moment: the site's own canvas lifts out of the screen to full frame
   const L = $('#lift');
   if (T.lift && t >= T.lift.on && t < T.lift.down[1]) {
-    const c = st.proc.cv, r0 = { x: PH.x + c.x * PH.k, y: PH.y + c.y * PH.k, w: c.width * PH.k, h: c.height * PH.k };
+    const c = st.proc.cv, r0 = CV ? { x: PH.x, y: PH.y, w: PH.w, h: PH.h } : { x: PH.x + c.x * PH.k, y: PH.y + c.y * PH.k, w: c.width * PH.k, h: c.height * PH.k };
     const a = inOut(prog(t, ...T.lift.up)) - inOut(prog(t, ...T.lift.down));
     Object.assign(L.style, { opacity: 1, left: lerp(r0.x, 0, a) + 'px', top: lerp(r0.y, 0, a) + 'px', width: lerp(r0.w, 1080, a) + 'px', height: lerp(r0.h, 1920, a) + 'px' });
     L.querySelector('.shade').style.opacity = a;

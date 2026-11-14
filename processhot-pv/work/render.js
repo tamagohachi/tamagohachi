@@ -8,7 +8,7 @@ const path = require('path');
   const b = await chromium.launch();
   const p = await b.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
   p.on('pageerror', (e) => console.error('PAGEERROR', e.message));
-  await p.goto('file://' + path.join(__dirname, 'video.html') + '?v=' + v.split('-')[0] + (v.endsWith('-en') ? '&lang=en' : ''));
+  await p.goto('file://' + path.join(__dirname, 'video.html') + '?v=' + v.split('-')[0] + (v.includes('-en') ? '&lang=en' : '') + (v.endsWith('-cv') ? '&ui=canvas' : ''));
   await p.evaluate(() => window.ready);
   const dur = await p.evaluate(() => window.DUR);
   if (process.argv[4] === 'cover') { await p.evaluate(() => window.cover()); await p.screenshot({ path: out, type: 'png' }); await b.close(); return; }
