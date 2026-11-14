@@ -11,6 +11,7 @@ const path = require('path');
   await p.goto('file://' + path.join(__dirname, 'video.html') + '?v=' + v);
   await p.evaluate(() => window.ready);
   const dur = await p.evaluate(() => window.DUR);
+  if (process.argv[4] === 'cover') { await p.evaluate(() => window.cover()); await p.screenshot({ path: out, type: 'png' }); await b.close(); return; }
   if (only) {
     for (const t of only) { await p.evaluate((t) => window.seek(t), t); await p.screenshot({ path: `${out}_${String(t).replace('.', '_')}.jpg`, type: 'jpeg', quality: 80 }); }
     await b.close(); return;

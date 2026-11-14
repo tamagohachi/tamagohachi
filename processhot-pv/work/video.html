@@ -21,6 +21,8 @@ body{color:var(--paper);font-family:"Inter Tight","Noto Sans JP",sans-serif;font
 .telop{position:absolute;left:72px;right:72px;text-align:center;opacity:0;font-weight:800;font-size:68px;line-height:1.3;letter-spacing:.02em}
 .telop small{display:block;font-size:30px;font-weight:600;letter-spacing:.16em;color:var(--acc);margin-bottom:14px}
 .telop .sub{display:block;font-size:44px;font-weight:600;margin-top:22px;letter-spacing:.03em}
+.telop .en{display:block;font-size:28px;font-weight:500;letter-spacing:.04em;line-height:1.3;opacity:.62;margin-top:20px}
+#wm{position:absolute;left:0;right:0;top:148px;text-align:center;font-size:22px;font-weight:600;letter-spacing:.1em;opacity:.45;z-index:9}
 .name{position:absolute;left:0;right:0;text-align:center;opacity:0;font-size:30px;letter-spacing:.12em}
 .name b{font-weight:900}.name span{font-weight:500}
 .name i{font-style:normal;font-weight:500;font-size:26px;letter-spacing:.08em;opacity:.7;margin-left:20px}
@@ -76,6 +78,7 @@ body{color:var(--paper);font-family:"Inter Tight","Noto Sans JP",sans-serif;font
   </div>
 
   <div id="telops"></div>
+  <div id="wm">@hakko.3d</div>
 </div>
 <script src="data.js"></script>
 <script>
@@ -95,7 +98,7 @@ const img = (name, file) => `../cap/${name}/${file}`;
 const FINALS = ['cafe', 'home', 'beans', 'iced'].map((n) => img(n, 'final.jpg'));
 
 /* ---------- phone geometry ---------- */
-const PH = { w: 680, x: 200, y: 436 }; PH.k = PH.w / C.vw; PH.h = C.vh * PH.k;
+const PH = { w: 680, x: 200, y: 452 }; PH.k = PH.w / C.vw; PH.h = C.vh * PH.k;
 const phone = $('#phone');
 Object.assign(phone.style, { left: PH.x + 'px', top: PH.y + 'px', width: PH.w + 'px', height: PH.h + 'px' });
 const shots = {};
@@ -113,17 +116,17 @@ if (V === 'reel') {
     hero: [0, 7.15], heroSwap: 1.7, ui: [6.95, 24.1], lift: { on: 13.2, up: [13.4, 14.15], down: [15.2, 15.9] },
     facts: [23.9, 27.1], gallery: [27, 29.4], end: [29.4, 32],
     telops: [
-      { a: .35, b: 1.65, y: 250, html: 'このコーヒー、<br>何か分かる？' },
-      { a: 1.8, b: 3.15, y: 250, html: 'こうすれば、<br>分かる。' },
-      { a: 3.35, b: 6.85, y: 250, html: 'プロセスまで、写す。' },
-      { a: 3.7, b: 6.85, y: 362, cls: 'name', html: '<span>PROCES</span><b>SHOT</b><i>プロセスショット</i>' },
-      { a: 7.2, b: 10.9, y: 262, html: '<small>01</small>写真を選ぶ' },
-      { a: 11.05, b: 15.85, y: 262, html: '<small>02</small>プロセスを選ぶ' },
-      { a: 16.0, b: 19.85, y: 262, html: '<small>03</small>産地とお店' },
-      { a: 20.0, b: 23.85, y: 262, html: '完成。<span class="sub">そのままストーリーズへ</span>' },
-      { a: 24.2, b: 26.95, y: 800, cls: 'telop big', html: '無料・登録なし<span class="sub" style="font-size:52px;margin-top:36px">写真は端末の外に出ません</span>' },
-      { a: 27.1, b: 29.4, y: 250, dout: .01, html: 'プロフィールのリンクから' },
-      { a: 29.7, b: 33, y: 790, html: '投稿するとき<br><span class="at">@hakko.3d</span> を<br>メンションしてね' },
+      { a: .35, b: 1.65, y: 250, html: 'このコーヒー、<br>何か分かる？', en: "Can you tell what coffee this is?" },
+      { a: 1.8, b: 3.15, y: 250, html: 'こうすれば、<br>分かる。', en: "Now you can." },
+      { a: 3.35, b: 6.85, y: 250, html: 'プロセスまで、写す。', en: "Capture the process, too." },
+      { a: 3.7, b: 6.85, y: 430, cls: 'name', html: '<span>PROCES</span><b>SHOT</b><i>プロセスショット</i>' },
+      { a: 7.2, b: 10.9, y: 226, html: '<small>01</small>写真を選ぶ', en: "Choose a photo" },
+      { a: 11.05, b: 15.85, y: 226, html: '<small>02</small>プロセスを選ぶ', en: "Choose the process" },
+      { a: 16.0, b: 19.85, y: 226, html: '<small>03</small>産地とお店', en: "Origin and shop" },
+      { a: 20.0, b: 23.85, y: 204, html: '完成。<span class="sub">そのままストーリーズへ</span>', en: "Done. Ready for Stories." },
+      { a: 24.2, b: 26.95, y: 760, cls: 'telop big', html: '無料・登録なし<span class="sub" style="font-size:52px;margin-top:36px">写真は端末の外に出ません</span>', en: "Free. No sign-up. Your photos never leave your device." },
+      { a: 27.1, b: 29.4, y: 250, dout: .01, html: 'プロフィールのリンクから', en: "Link in profile" },
+      { a: 29.7, b: 33, y: 790, html: '投稿するとき<br><span class="at">@hakko.3d</span> を<br>メンションしてね', en: "Mention @hakko.3d when you post" },
     ],
   };
 } else { // 15s stories cut — no narration needed
@@ -135,9 +138,9 @@ if (V === 'reel') {
     hero: [0, 3.35], heroSwap: 1.5, ui: [3.2, 9.2], lift: null,
     facts: null, gallery: null, end: null, outro: [9, 15],
     telops: [
-      { a: .3, b: 3.2, y: 250, html: '何を飲んだか、<br>まで投稿できる。' },
-      { a: 3.5, b: 8.95, y: 262, html: '写真を選んで、<span class="sub">プロセスを選ぶだけ</span>' },
-      { a: 9.4, b: 16, y: 300, html: '無料・登録なし。<span class="sub">メンションしてくれたら嬉しいです<br><b style="font-weight:800">@hakko.3d</b></span>' },
+      { a: .3, b: 3.2, y: 250, html: '何を飲んだか、<br>まで投稿できる。', en: "Share what you actually drank." },
+      { a: 3.5, b: 8.95, y: 204, html: '写真を選んで、<span class="sub">プロセスを選ぶだけ</span>', en: "Choose a photo, then the process." },
+      { a: 9.4, b: 16, y: 200, html: '無料・登録なし。<span class="sub">メンションしてくれたら嬉しいです<br><b style="font-weight:800">@hakko.3d</b></span>', en: "Free, no sign-up. We'd love a mention." },
     ],
   };
 }
@@ -147,13 +150,20 @@ $('#heroRaw').src = '../photos/cafe.jpg'; $('#heroFinal').src = FINALS[0];
 $('#factsBg').src = FINALS[0]; $('#liftImg').src = img('cafe', 'cv_country.jpg');
 const gal = FINALS.map((f, i) => { const im = new Image(); im.className = 'fill'; im.src = f; $('#gallery').appendChild(im); return im; });
 const tel = T.telops.map((o) => {
-  const e = document.createElement('div'); e.className = o.cls || 'telop'; e.innerHTML = o.html; e.style.top = o.y + 'px';
+  const e = document.createElement('div'); e.className = o.cls || 'telop'; e.innerHTML = o.html + (o.en ? `<span class="en">${o.en}</span>` : ''); e.style.top = o.y + 'px';
   $('#telops').appendChild(e); return e;
 });
 const set = (e, op, tr) => { e.style.opacity = op.toFixed(4); if (tr !== undefined) e.style.transform = tr; };
 
 /* ---------- one frame ---------- */
 window.DUR = T.dur;
+window.cover = () => {
+  window.seek(2.6); tel.forEach((e) => e.style.opacity = 0);
+  $('#hero .shade').style.cssText = 'height:100%;background:rgba(14,14,14,.5)';
+  const c = document.createElement('div'); c.className = 'telop'; c.style.cssText = 'opacity:1;top:700px;font-size:84px';
+  c.innerHTML = '何を飲んだか、<br>まで投稿できる。<span class="sub" style="font-size:34px;letter-spacing:.12em;margin-top:44px"><span style="font-weight:500">PROCES</span><b style="font-weight:900">SHOT</b></span>';
+  $('#telops').appendChild(c);
+};
 window.seek = (t) => {
   // cuts 1–2: photo, then the same photo as a finished image; slow push toward the process name
   const hOp = win(t, T.hero[0] - 1, T.hero[1], .01, .35);
