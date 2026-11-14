@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' blob: data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>記録フォーム（仮）</title>
+<style>
+:root{--bg:#fff;--fg:#111;--sub:#777;--line:#e4e4e4;--acc:#111;--r:14px}
+@media(prefers-color-scheme:dark){:root{--bg:#0c0c0c;--fg:#f2f2f2;--sub:#888;--line:#2a2a2a;--acc:#f2f2f2}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 -apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;-webkit-text-size-adjust:100%}
+main{max-width:480px;margin:0 auto;padding:24px 20px calc(110px + env(safe-area-inset-bottom))}
+h1{font-size:13px;font-weight:600;letter-spacing:.18em;color:var(--sub);margin:0 0 28px}
+section{margin-bottom:40px}
+h2{font-size:13px;font-weight:600;letter-spacing:.08em;margin:0 0 12px;display:flex;justify-content:space-between}
+h2 small{color:var(--sub);font-weight:400}
+.photo{display:flex;align-items:center;justify-content:center;aspect-ratio:4/5;border:1px dashed var(--line);border-radius:var(--r);overflow:hidden;cursor:pointer;color:var(--sub);position:relative}
+.photo img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.photo input{display:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:none;color:var(--fg);border-radius:999px;padding:10px 16px;font:inherit;font-size:15px;cursor:pointer;min-height:44px}
+.chip[aria-pressed=true]{background:var(--acc);color:var(--bg);border-color:var(--acc)}
+.sub{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.sub p{margin:0 0 10px;font-size:12px;color:var(--sub)}
+input[type=text],input[type=date],select{width:100%;font:inherit;font-size:16px;padding:13px 14px;border:1px solid var(--line);border-radius:var(--r);background:none;color:var(--fg);min-height:48px}
+.note{font-size:12px;color:var(--sub);margin:8px 0 0}
+.bar{position:fixed;left:0;right:0;bottom:0;padding:14px 20px calc(14px + env(safe-area-inset-bottom));background:var(--bg);border-top:1px solid var(--line)}
+.bar div{max-width:480px;margin:0 auto}
+button.go{width:100%;border:0;border-radius:999px;background:var(--acc);color:var(--bg);font:inherit;font-weight:600;padding:16px;min-height:52px;cursor:pointer}
+button.go:disabled{opacity:.25;cursor:default}
+pre{font-size:12px;background:none;border:1px solid var(--line);border-radius:var(--r);padding:14px;white-space:pre-wrap;display:none}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+<h1>NEW RECORD</h1>
+
+<section>
+  <h2>写真 <small>必須</small></h2>
+  <label class="photo" id="photoBox">
+    <span id="photoHint">タップして写真を選ぶ</span>
+    <input type="file" id="photo" accept="image/*">
+  </label>
+  <p class="note">写真は端末内でのみ処理します。位置情報などの撮影データは取り除かれ、どこにも送信・保存されません。</p>
+</section>
+
+<section>
+  <h2>プロセス <small>任意</small></h2>
+  <div class="chips" id="procMain"></div>
+  <div class="sub" id="procSubWrap" hidden>
+    <p id="procSubLabel"></p>
+    <div class="chips" id="procSub"></div>
+    <input type="text" id="procFree" maxlength="12" placeholder="自由入力（12文字まで）" hidden style="margin-top:10px">
+  </div>
+</section>
+
+<section>
+  <h2>生産国 <small>任意</small></h2>
+  <select id="country"><option value="">選択する</option></select>
+</section>
+
+<section>
+  <h2>場所 <small>任意</small></h2>
+  <div class="chips" id="placeMode">
+    <button class="chip" data-m="shop" aria-pressed="false">店舗</button>
+    <button class="chip" data-m="home" aria-pressed="false">自宅</button>
+  </div>
+  <div class="sub" id="shopWrap" hidden>
+    <input type="text" id="shop" maxlength="40" placeholder="店舗名" autocomplete="off">
+    <p class="note" style="margin-top:8px">現在地は取得しません。入力した店舗名のみが画像に載ります。</p>
+  </div>
+  <p class="note" id="homeNote" hidden>位置情報は一切使わず、画像には「HOME」とだけ表示します。</p>
+</section>
+
+<section>
+  <h2>日付</h2>
+  <input type="date" id="date">
+</section>
+
+<pre id="out"></pre>
+</main>
+
+<div class="bar"><div><button class="go" id="go" disabled>画像をつくる</button></div></div>
+
+<script>
+(()=>{
+const PROC=[
+ {k:"Washed",l:"ウォッシュド",sub:[]},
+ {k:"Natural",l:"ナチュラル",sub:["Anaerobic|アナエロビック","Carbonic Maceration|カーボニックマセレーション","Infused / Co-ferment|インフューズド／コーファーメント"]},
+ {k:"Honey",l:"ハニー",sub:["Yellow|イエロー","Red|レッド","Black|ブラック"]},
+ {k:"Other",l:"その他",sub:["Thermal Shock|サーマルショック","Decaf|デカフェ","Wet-hulled (Giling Basah)|スマトラ式"],free:true}
+];
+const COUNTRY=["Blend|ブレンド","Ethiopia|エチオピア","Kenya|ケニア","Rwanda|ルワンダ","Burundi|ブルンジ","Tanzania|タンザニア","Uganda|ウガンダ","Colombia|コロンビア","Brazil|ブラジル","Panama|パナマ","Costa Rica|コスタリカ","Guatemala|グアテマラ","El Salvador|エルサルバドル","Honduras|ホンジュラス","Nicaragua|ニカラグア","Mexico|メキシコ","Peru|ペルー","Bolivia|ボリビア","Ecuador|エクアドル","Jamaica|ジャマイカ","Yemen|イエメン","India|インド","Indonesia|インドネシア","Vietnam|ベトナム","Thailand|タイ","Myanmar|ミャンマー","China|中国","Papua New Guinea|パプアニューギニア","Timor-Leste|東ティモール","Hawaii (USA)|ハワイ","Japan|日本"];
+const $=s=>document.querySelector(s);
+const st={photo:null,proc:null,sub:null,free:"",country:"",mode:null,shop:"",date:""};
+
+// process
+const pm=$("#procMain");
+PROC.forEach(p=>{const b=el("button","chip",p.l);b.setAttribute("aria-pressed","false");b.onclick=()=>{
+  const same=st.proc===p.k; st.proc=same?null:p.k; st.sub=null; st.free=""; $("#procFree").value="";
+  render();};b.dataset.k=p.k;pm.appendChild(b)});
+function renderProc(){
+  [...pm.children].forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===st.proc));
+  const p=PROC.find(x=>x.k===st.proc), w=$("#procSubWrap"), s=$("#procSub");
+  s.textContent="";
+  if(!p||(!p.sub.length&&!p.free)){w.hidden=true;return}
+  w.hidden=false; $("#procSubLabel").textContent="詳細（任意・親だけでもOK）";
+  p.sub.forEach(v=>{const [k,l]=v.split("|");const b=el("button","chip",l);
+    b.setAttribute("aria-pressed",st.sub===k);b.onclick=()=>{st.sub=st.sub===k?null:k;st.free="";$("#procFree").value="";render()};s.appendChild(b)});
+  $("#procFree").hidden=!p.free;
+}
+$("#procFree").oninput=e=>{st.free=e.target.value.trim();if(st.free)st.sub=null;render()};
+
+// country
+COUNTRY.forEach(c=>{const [k,l]=c.split("|");const o=el("option","",`${l}　${k}`);o.value=k;$("#country").appendChild(o)});
+$("#country").onchange=e=>{st.country=e.target.value;render()};
+
+// place
+document.querySelectorAll("#placeMode .chip").forEach(b=>b.onclick=()=>{
+  st.mode=st.mode===b.dataset.m?null:b.dataset.m; if(st.mode!=="shop"){st.shop="";$("#shop").value=""} render()});
+$("#shop").oninput=e=>{st.shop=e.target.value.trim();render()};
+
+// date
+const d=new Date();$("#date").value=st.date=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+$("#date").onchange=e=>{st.date=e.target.value;render()};
+
+// photo: re-encode via canvas => EXIF/GPS dropped; kept only in memory
+$("#photo").onchange=async e=>{
+  const f=e.target.files[0]; if(!f)return;
+  try{
+    const bmp=await createImageBitmap(f,{imageOrientation:"from-image"});
+    const max=2160,sc=Math.min(1,max/Math.max(bmp.width,bmp.height));
+    const c=document.createElement("canvas");c.width=Math.round(bmp.width*sc);c.height=Math.round(bmp.height*sc);
+    c.getContext("2d").drawImage(bmp,0,0,c.width,c.height);bmp.close&&bmp.close();
+    const blob=await new Promise(r=>c.toBlob(r,"image/jpeg",.92));
+    if(st.photo)URL.revokeObjectURL(st.photo.url);
+    st.photo={blob,url:URL.createObjectURL(blob),w:c.width,h:c.height};
+    const old=$("#photoBox img");old&&old.remove();
+    const im=el("img");im.src=st.photo.url;im.alt="選択した写真";$("#photoBox").appendChild(im);
+    $("#photoHint").hidden=true;
+  }catch(_){alert("この写真を読み込めませんでした。別の写真をお試しください。")}
+  e.target.value="";render();
+};
+
+function render(){
+  renderProc();
+  document.querySelectorAll("#placeMode .chip").forEach(b=>b.setAttribute("aria-pressed",b.dataset.m===st.mode));
+  $("#shopWrap").hidden=st.mode!=="shop"; $("#homeNote").hidden=st.mode!=="home";
+  $("#go").disabled=!st.photo;
+}
+// 空の項目は出力から行ごと除外する（画像側の仕様と同じ）
+$("#go").onclick=()=>{
+  const p=PROC.find(x=>x.k===st.proc);
+  const rec={process:p?{main:p.k,sub:st.sub||undefined,custom:st.free||undefined}:undefined,
+    country:st.country||undefined,
+    place:st.mode==="home"?"HOME":(st.shop||undefined),date:st.date||undefined,
+    photo:st.photo&&`${st.photo.w}x${st.photo.h} jpeg (in-memory)`};
+  const o=$("#out");o.style.display="block";o.textContent="→ 次工程（画像生成）へ渡す値\n"+JSON.stringify(rec,null,2);
+  o.scrollIntoView({behavior:"smooth"});
+};
+function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x)e.textContent=x;return e}
+render();
+})();
+</script>
+</body>
+</html>
