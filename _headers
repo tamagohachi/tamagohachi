@@ -1,0 +1,13 @@
+# セキュリティヘッダー（設計書 7.8）。Cloudflare Pages / Netlify の _headers 形式。
+# 他のホスティングでは同じ値を各サービスの設定方法で指定すること。
+/*
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; font-src 'self'; connect-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  Strict-Transport-Security: max-age=63072000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=(), usb=()
+  Cross-Origin-Opener-Policy: same-origin
+  X-Frame-Options: DENY
+
+/sw.js
+  Cache-Control: no-cache
