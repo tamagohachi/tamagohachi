@@ -2,6 +2,8 @@
 
 飲んだコーヒーの写真に、精製プロセスを重ねたシェア画像をつくる静的サイト。
 
+公開URL: https://processhot.com
+
 - `site/` … 公開されるファイル一式（ビルド不要）
 - `docs/design-v1.md` … 設計書
 - `wrangler.jsonc` … Cloudflare Workers（静的アセット）で `site/` を公開する設定

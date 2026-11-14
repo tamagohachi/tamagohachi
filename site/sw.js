@@ -1,5 +1,5 @@
 // 一度開いた端末ではオフラインでも起動・画像生成できるようにする（設計書 7.9）
-const CACHE = "app-v6";
+const CACHE = "app-v7";
 const ASSETS = ["./", "index.html", "privacy.html", "css/app.css", "js/app.js", "js/render.js", "js/data.js", "fonts/inter-tight.woff2"];
 
 // 配信側が .html を拡張子なしのURLへ転送することがある。転送された応答はページ遷移に
