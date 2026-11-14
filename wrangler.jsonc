@@ -1,0 +1,7 @@
+{
+  // Cloudflare Workers（静的アセット）で site/ だけを公開する設定
+  // name は Cloudflare ダッシュボード上の Worker 名と同じにすること
+  "name": "tamagohachi",
+  "compatibility_date": "2026-01-01",
+  "assets": { "directory": "./site" }
+}
