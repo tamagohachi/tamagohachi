@@ -1,5 +1,5 @@
-// 仮称。サービス名が決まったらここだけ変える（画像のワードマークに使う）
-export const WORDMARK = "ONE CUP";
+// サービス名（画像のワードマークに使う）
+export const WORDMARK = "PROCESSHOT";
 // ワードマークの横に小さく併記する発信元のアカウント
 export const HANDLE = "@hakko.3d";
 
