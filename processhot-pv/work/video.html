@@ -175,7 +175,7 @@ const tel = T.telops.map((o) => {
 const set = (e, op, tr) => { e.style.opacity = op.toFixed(4); if (tr !== undefined) e.style.transform = tr; };
 
 /* ---------- one frame ---------- */
-window.DUR = T.dur;
+window.DUR = T.dur; window.T = T;
 window.cover = () => {
   window.seek(2.6); tel.forEach((e) => e.style.opacity = 0);
   $('#hero .shade').style.cssText = 'height:100%;background:rgba(14,14,14,.5)';

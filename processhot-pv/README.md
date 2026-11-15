@@ -4,6 +4,7 @@
 - `out/processhot_stories_15s.mp4` … ストーリーズ用短縮版（15秒・無音）
 - `out/processhot_cover.png` … カバー画像（1080×1920、中央にタイトル）
 - `out/*_sitefont.*` … 重ねる文字がすべてサイト配信フォント Inter Tight の版（テロップ英語。`render.js reel-en` / `story-en`）
+- `out/*_bgm.mp4` … 上の日本語版2本にBGMを入れたもの（オリジナル曲。`work/music.py` で合成、`audio/` が音声単体。-14 LUFS／ピーク -2 dBFS 以下）
 - `photos/` … 架空のコーヒー写真（AI生成。実在の店・商品ではない）
 - `cap/device/` … 実機 iPhone の画面（依頼者提供のカット。フレームの重なりがあった画像部分は、同じ状態のサイト描画に差し替え済み）と、実機で保存した完成画像
 - `cap/` … 本番サイト https://processhot.com を iPhone エミュレーションで実際に操作して取得した各画面と、サイトが出力した完成画像（`final.jpg`）

@@ -1,8 +1,8 @@
 # リール投稿：キャプション
 
-- 動画：`out/processhot_reel_32s.mp4`（日本語テロップ）
+- 動画：`out/processhot_reel_32s_bgm.mp4`（日本語テロップ・BGM入り）
 - カバー：`out/processhot_cover.png`
-- 音：アプリ内音源から選ぶ（動画は無音）
+- 音：オリジナルBGM入り
 
 ---
 
