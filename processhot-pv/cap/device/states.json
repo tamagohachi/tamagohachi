@@ -1,0 +1,73 @@
+{
+ "vw": 1170,
+ "vh": 2270,
+ "states": [
+  {
+   "label": "top",
+   "file": "top.png",
+   "tap": {
+    "x": 585,
+    "y": 1838
+   }
+  },
+  {
+   "label": "picker",
+   "file": "picker.png",
+   "tap": {
+    "x": 380,
+    "y": 1798
+   }
+  },
+  {
+   "label": "photo",
+   "file": "photo.png",
+   "tap": {
+    "x": 585,
+    "y": 1905
+   }
+  },
+  {
+   "label": "proc",
+   "file": "proc.png",
+   "tap": {
+    "x": 314,
+    "y": 1414
+   },
+   "cv": {
+    "x": 360,
+    "y": 459,
+    "width": 450,
+    "height": 798
+   }
+  },
+  {
+   "label": "country",
+   "file": "country.png",
+   "tap": {
+    "x": 228,
+    "y": 1389
+   }
+  },
+  {
+   "label": "place",
+   "file": "place.png",
+   "tap": {
+    "x": 855,
+    "y": 1414
+   }
+  },
+  {
+   "label": "preview_full",
+   "file": "preview_full.png",
+   "tap": {
+    "x": 585,
+    "y": 1822
+   }
+  },
+  {
+   "label": "saved",
+   "file": "saved.png",
+   "tap": null
+  }
+ ]
+}

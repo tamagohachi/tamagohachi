@@ -92,32 +92,38 @@ const lerp = (a, b, x) => a + (b - a) * x;
 // 0→1 over [a, a+din], hold, 1→0 over [b-dout, b]
 const win = (t, a, b, din = .35, dout = .25) => Math.min(prog(t, a, a + din), 1 - prog(t, b - dout, b));
 
-const QS = new URLSearchParams(location.search), V = QS.get('v') || 'reel', EN = QS.get('lang') === 'en', CV = QS.get('ui') === 'canvas';
+const QS = new URLSearchParams(location.search), V = QS.get('v') || 'reel', EN = QS.get('lang') === 'en', CV = QS.get('ui') === 'canvas', REAL = QS.get('src') !== 'emu'; // default: real-device frames
 if (EN) document.body.style.fontFamily = '"Inter Tight"'; // overlay text in the site-served font only
-const D = window.DATA, C = D.cafe, st = Object.fromEntries(C.states.map((s) => [s.label, s]));
+const D = window.DATA, SRC = REAL ? 'device' : 'cafe', C = D[SRC], st = Object.fromEntries(C.states.map((s) => [s.label, s]));
 const img = (name, file) => `../cap/${name}/${file}`;
-const FINALS = ['cafe', 'home', 'beans', 'iced'].map((n) => img(n, 'final.jpg'));
+const FINALS = [SRC, 'home', 'beans', 'iced'].map((n) => img(n, 'final.jpg'));
 
 /* ---------- phone geometry ---------- */
-const PH = CV ? { w: 620, x: 230, y: 452 } : { w: 680, x: 200, y: 452 }; PH.k = PH.w / C.vw; PH.h = CV ? PH.w * 16 / 9 : C.vh * PH.k;
+const PH = CV ? { w: 620, x: 230, y: 452 } : (REAL ? { w: 640, x: 220, y: 452 } : { w: 680, x: 200, y: 452 }); PH.k = PH.w / C.vw; PH.h = CV ? PH.w * 16 / 9 : C.vh * PH.k;
 // canvas mode: show only the image the site draws (all Inter Tight), not the Japanese UI around it
-const cvFile = (l) => (l === 'top' ? 'cv_photo.jpg' : l === 'saved' ? 'final.jpg' : `cv_${l}.jpg`);
+const cvFile = (l) => (l === 'top' || l === 'picker' ? 'cv_photo.jpg' : l === 'saved' ? 'final.jpg' : `cv_${l}.jpg`);
+if (REAL && !CV) $('#tap').style.background = '#0E0E0E'; // light screens: ink-coloured tap mark
 if (CV) { $('#phone').style.borderRadius = '0'; $('#phone').style.border = '0'; $('#tap').style.display = 'none'; }
 const phone = $('#phone');
 Object.assign(phone.style, { left: PH.x + 'px', top: PH.y + 'px', width: PH.w + 'px', height: PH.h + 'px' });
 const shots = {};
-for (const s of C.states) { const i = new Image(); i.src = img('cafe', CV ? cvFile(s.label) : s.file); phone.appendChild(i); shots[s.label] = i; }
+for (const s of C.states) { const i = new Image(); i.src = img(SRC, CV ? cvFile(s.label) : s.file); phone.appendChild(i); shots[s.label] = i; }
 
 /* ---------- timelines ---------- */
 const typed = C.states.filter((s) => s.label.startsWith('place_type')).map((s) => s.label);
 let T;
+const RS = REAL && V === 'reel' ? {
+  screens: [[6.9, 'top'], [8.5, 'picker'], [9.3, 'photo'], [10.5, 'proc'], [12.1, 'country'], [17.3, 'place'], [19.3, 'preview_full'], [22.8, 'saved']],
+  taps: [[8.4, 'top'], [9.2, 'picker'], [10.4, 'photo'], [12.0, 'proc'], [17.2, 'country'], [19.2, 'place'], [22.7, 'preview_full']],
+  lift: { on: 12.1, up: [12.5, 13.25], down: [15.2, 15.9] },
+} : null;
 if (V === 'reel') {
   const screens = [[6.9, 'top'], [8.5, 'photo'], [10.5, 'proc'], [12.0, 'proc_main'], [13.2, 'country'], [16.7, 'place'], [17.4, 'place_shop'],
     ...typed.map((l, i) => [17.7 + i * (1.1 / typed.length), l]), [19.3, 'preview_full'], [20.8, 'preview_label'], [21.9, 'preview_back'], [22.8, 'saved']];
   T = {
-    dur: 32, screens,
-    taps: [[8.4, 'top'], [10.4, 'photo'], [11.9, 'proc'], [13.1, 'proc_main'], [16.6, 'country'], [17.3, 'place'], [19.2, typed[typed.length - 1]], [20.7, 'preview_full'], [21.8, 'preview_label'], [22.7, 'preview_back']],
-    hero: [0, 7.15], heroSwap: 1.7, ui: [6.95, 24.1], lift: { on: 13.2, up: [13.4, 14.15], down: [15.2, 15.9] },
+    dur: 32, screens: RS ? RS.screens : screens,
+    taps: RS ? RS.taps : [[8.4, 'top'], [10.4, 'photo'], [11.9, 'proc'], [13.1, 'proc_main'], [16.6, 'country'], [17.3, 'place'], [19.2, typed[typed.length - 1]], [20.7, 'preview_full'], [21.8, 'preview_label'], [22.7, 'preview_back']],
+    hero: [0, 7.15], heroSwap: 1.7, ui: [6.95, 24.1], lift: RS ? RS.lift : { on: 13.2, up: [13.4, 14.15], down: [15.2, 15.9] },
     facts: [23.9, 27.1], gallery: [27, 29.4], end: [29.4, 32],
     telops: [
       { a: .35, b: 1.65, y: 250, html: 'このコーヒー、<br>何か分かる？', en: "Can you tell what coffee this is?" },
@@ -134,7 +140,7 @@ if (V === 'reel') {
     ],
   };
 } else { // 15s stories cut — no narration needed
-  const fast = ['top', 'photo', 'proc', 'proc_main', 'country', 'place', 'place_shop', typed[Math.floor(typed.length / 2)], typed[typed.length - 1], 'preview_full', 'saved'];
+  const fast = REAL ? ['top', 'picker', 'photo', 'proc', 'country', 'place', 'preview_full', 'saved'] : ['top', 'photo', 'proc', 'proc_main', 'country', 'place', 'place_shop', typed[Math.floor(typed.length / 2)], typed[typed.length - 1], 'preview_full', 'saved'];
   const t0 = 3.3, step = 5.4 / fast.length;
   T = {
     dur: 15, screens: fast.map((l, i) => [t0 + i * step, l]),
@@ -151,8 +157,9 @@ if (V === 'reel') {
 
 /* ---------- static content ---------- */
 $('#heroRaw').src = '../photos/cafe.jpg'; $('#heroFinal').src = FINALS[0];
-$('#factsBg').src = FINALS[0]; $('#liftImg').src = img('cafe', 'cv_country.jpg');
-const gal = FINALS.map((f, i) => { const im = new Image(); im.className = 'fill'; im.src = f; $('#gallery').appendChild(im); return im; });
+$('#factsBg').src = FINALS[0]; $('#liftImg').src = img(SRC, 'cv_country.jpg');
+const GAL = V === 'reel' ? [FINALS[1], FINALS[2], FINALS[3], FINALS[0]] : FINALS;
+const gal = GAL.map((f, i) => { const im = new Image(); im.className = 'fill'; im.src = f; $('#gallery').appendChild(im); return im; });
 if (EN) { // Inter Tight only: English lines become the telop, no Japanese overlay text
   T.telops.forEach((o) => {
     if (o.cls === 'name') { o.html = '<span>PROCES</span><b>SHOT</b>'; return; }

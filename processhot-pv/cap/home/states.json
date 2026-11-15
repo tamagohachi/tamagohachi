@@ -28,7 +28,7 @@
    "label": "proc",
    "file": "02_proc.png",
    "tap": {
-    "x": 105.75,
+    "x": 287.25,
     "y": 392
    },
    "cv": {
@@ -39,24 +39,70 @@
    }
   },
   {
-   "label": "country",
-   "file": "03_country.png",
+   "label": "proc_main",
+   "file": "03_proc_main.png",
    "tap": {
-    "x": 177.875,
+    "x": 234.3671875,
+    "y": 536
+   }
+  },
+  {
+   "label": "country",
+   "file": "04_country.png",
+   "tap": {
+    "x": 74.7578125,
     "y": 384
    }
   },
   {
    "label": "place",
-   "file": "04_place.png",
+   "file": "05_place.png",
    "tap": {
-    "x": 287.25,
+    "x": 105.75,
     "y": 392
    }
   },
   {
+   "label": "place_shop",
+   "file": "06_place_shop.png",
+   "tap": null
+  },
+  {
+   "label": "place_type02",
+   "file": "07_place_type02.png",
+   "tap": null
+  },
+  {
+   "label": "place_type04",
+   "file": "08_place_type04.png",
+   "tap": null
+  },
+  {
+   "label": "place_type06",
+   "file": "09_place_type06.png",
+   "tap": null
+  },
+  {
+   "label": "place_type08",
+   "file": "10_place_type08.png",
+   "tap": null
+  },
+  {
+   "label": "place_type10",
+   "file": "11_place_type10.png",
+   "tap": null
+  },
+  {
+   "label": "place_type11",
+   "file": "12_place_type11.png",
+   "tap": {
+    "x": 336,
+    "y": 462
+   }
+  },
+  {
    "label": "saved",
-   "file": "05_saved.png",
+   "file": "13_saved.png",
    "tap": null
   }
  ]

@@ -10,7 +10,8 @@ const VW = 393, VH = 720;
 
 const JOBS = {
   cafe:  { photo: 'cafe.jpg',  main: 'ナチュラル', sub: 'アナエロビック', country: 'エチオピア', shop: 'Kissa Hakko', full: true },
-  home:  { photo: 'home.jpg',  main: 'ウォッシュド', sub: null, country: 'ケニア', shop: null },
+  real:  { photo: 'cafe.jpg',  main: 'ウォッシュド', sub: null, country: 'エチオピア', shop: null, full: true },
+  home:  { photo: 'home.jpg',  main: 'ナチュラル', sub: 'アナエロビック', country: 'エチオピア', shop: 'Kissa Hakko' },
   beans: { photo: 'beans.jpg', main: 'ハニー', sub: 'レッド', country: 'コスタリカ', shop: 'Hakko Roasters' },
   iced:  { photo: 'iced.jpg',  main: 'ナチュラル', sub: 'カーボニックマセレーション', country: 'コロンビア', shop: 'Hakko Stand' },
 };
